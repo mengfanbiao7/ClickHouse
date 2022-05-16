@@ -187,6 +187,18 @@ bool IParserColumnDeclaration<NameParser>::parseImpl(Pos & pos, ASTPtr & node, E
             return false;
     }
 
+    if (allow_null_modifiers)
+    {
+        if (s_not.ignore(pos, expected))
+        {
+            if (!s_null.ignore(pos, expected))
+                return false;
+            null_modifier.emplace(false);
+        }
+        else if (s_null.ignore(pos, expected))
+            null_modifier.emplace(true);
+    }
+
     Pos pos_before_specifier = pos;
     if (s_default.ignore(pos, expected) || s_materialized.ignore(pos, expected) || s_alias.ignore(pos, expected))
     {
@@ -222,7 +234,7 @@ bool IParserColumnDeclaration<NameParser>::parseImpl(Pos & pos, ASTPtr & node, E
     if (require_type && !type && !default_expression)
         return false; /// reject column name without type
 
-    if (type && allow_null_modifiers)
+    if (type && allow_null_modifiers && !null_modifier.has_value())
     {
         if (s_not.ignore(pos, expected))
         {

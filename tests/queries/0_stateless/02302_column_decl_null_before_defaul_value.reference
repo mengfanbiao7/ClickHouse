@@ -1,0 +1,7 @@
+create table, column +type +NULL
+create table, column +type +NOT NULL
+create table, column +type +NULL +DEFAULT
+create table, column +type +NOT NULL +DEFAULT
+create table, column +type +DEFAULT +NULL
+create table, column +type +DEFAULT +NOT NULL
+create table, column -type +NULL
